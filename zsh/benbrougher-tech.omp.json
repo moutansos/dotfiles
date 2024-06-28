@@ -17,7 +17,7 @@
         },
         {
           "background": "#0087D8",
-          "foreground": "#003544",
+          "foreground": "#171717",
           "powerline_symbol": "\ue0b0",
           "properties": {
             "folder_separator_icon": "/",

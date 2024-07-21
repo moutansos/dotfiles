@@ -22,3 +22,7 @@ export EDITOR=nvim
 eval "$(oh-my-posh init zsh --config ~/benbrougher-tech.omp.json)"
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 export PATH=$PATH:/home/ben/.local/bin
+
+if [ -f ~/.private_env ]; then
+    source ~/.private_env
+fi

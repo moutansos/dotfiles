@@ -26,3 +26,8 @@ export PATH=$PATH:/home/ben/.local/bin
 if [ -f ~/.private_env ]; then
     source ~/.private_env
 fi
+
+if [ -f ~/.profile ]; then
+    source ~/.profile
+fi
+. "/home/ben/.deno/env"

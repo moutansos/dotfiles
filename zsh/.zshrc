@@ -34,12 +34,13 @@ if [ -f ~/.private_env ]; then
     source ~/.private_env
 fi
 
-<<<<<<< HEAD
 if [ -f ~/.profile ]; then
     source ~/.profile
 fi
 
-. "/home/ben/.deno/env"
+if [ -f /home/ben/.deno/env ]; then
+    . "/home/ben/.deno/env"
+fi
 
 # add Pulumi to the PATH
 if [ -d /home/ben/.pulumi/bin ]; then

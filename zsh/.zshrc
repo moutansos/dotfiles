@@ -1,6 +1,13 @@
 bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 
+bindkey '^R' history-incremental-search-backward
+
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+setopt appendhistory
+
 # enable color support of ls and also add handy aliases
   if [ -x /usr/bin/dircolors ]; then
       test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -27,7 +34,14 @@ if [ -f ~/.private_env ]; then
     source ~/.private_env
 fi
 
+<<<<<<< HEAD
 if [ -f ~/.profile ]; then
     source ~/.profile
 fi
+
 . "/home/ben/.deno/env"
+
+# add Pulumi to the PATH
+if [ -d /home/ben/.pulumi/bin ]; then
+    export PATH=$PATH:/home/ben/.pulumi/bin
+fi

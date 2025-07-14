@@ -46,3 +46,13 @@ fi
 if [ -d /home/ben/.pulumi/bin ]; then
     export PATH=$PATH:/home/ben/.pulumi/bin
 fi
+
+# opencode
+export PATH=/home/ben/.opencode/bin:$PATH
+
+# bun completions
+[ -s "/home/ben/.bun/_bun" ] && source "/home/ben/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

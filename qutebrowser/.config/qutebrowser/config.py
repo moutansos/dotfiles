@@ -6,8 +6,6 @@ if sys.platform.startswith("win"):
     config.set("editor.command", ["wt.exe", "nvim", "-f", "{file}", "-c", "normal {line}G{column0}l"])
     config.bind(f"{leader}swi", "spawn -o pwsh.exe -c Start-WorkOnAdoItem.ps1 -WorkItemUrl {url}")
     config.bind(f"{leader}oe", "spawn pwsh.exe -c Start-Process \"{url}\"")
-else if sys.platform.startswith("linux"):
-    # TODO: Linux specific editor command
 
 default_zoom = "80%"
 leader = "<Space>"

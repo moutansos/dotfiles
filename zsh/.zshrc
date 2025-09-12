@@ -56,3 +56,7 @@ export PATH=/home/ben/.opencode/bin:$PATH
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+if [ -d "$HOME/source/repos/scripts" ]; then
+    export PATH="$HOME/source/repos/scripts:$PATH"
+fi

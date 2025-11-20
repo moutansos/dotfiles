@@ -121,7 +121,8 @@
         },
         {
           "properties": {
-            "cache_duration": "none"
+            "cache_duration": "none",
+            "time_format": "03:04:05 PM"
           },
           "leading_diamond": "\ue0b2",
           "trailing_diamond": "\ue0b4",

@@ -60,3 +60,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 if [ -d "$HOME/source/repos/scripts" ]; then
     export PATH="$HOME/source/repos/scripts:$PATH"
 fi
+
+# opencode things
+if command -v opencode &> /dev/null; then
+    alias oca="opencode attach http://localhost:4097"
+    alias ocs="opencode serve --hostname=0.0.0.0 --port=4097 --cors=https://oc.msyke.dev"
+fi

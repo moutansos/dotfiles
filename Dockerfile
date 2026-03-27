@@ -78,6 +78,9 @@ COPY --chown=ben:ben zsh/benbrougher-tech.omp.json /home/ben/benbrougher-tech.om
 COPY --chown=ben:ben tmux/.tmux.conf /home/ben/.tmux.conf
 COPY --chown=ben:ben op/config.json /home/ben/op-config.json
 
+RUN mkdir -p /templates/source/repos /templates/source/local \
+    && chown -R ben:ben /templates
+
 USER ben
 WORKDIR /home/ben/source
 
@@ -86,10 +89,15 @@ RUN curl -fsSL https://bun.sh/install | bash \
     && npm install -g npm@latest \
     && curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path \
     && git clone --depth=1 https://code.msyke.dev/mSyke/nvim-config /home/ben/.config/nvim \
-    && git clone --depth=1 https://github.com/moutansos/op /home/ben/source/repos/op \
-    && cp /home/ben/op-config.json /home/ben/source/repos/op/config.json \
-    && make -C /home/ben/source/repos/op/native \
+    && git clone --depth=1 https://github.com/moutansos/op /templates/source/repos/op \
+    && cp /home/ben/op-config.json /templates/source/repos/op/config.json \
+    && make -C /templates/source/repos/op/native \
     && printf '#!/bin/bash\npwsh ~/source/repos/op/Open-Project.ps1 "$@"\n' > /home/ben/.local/bin/op \
-    && chmod +x /home/ben/.local/bin/op
+    && chmod +x /home/ben/.local/bin/op \
+    && printf '%s\n' '#!/bin/bash' 'set -euo pipefail' '' 'SOURCE_ROOT="/home/ben/source"' 'TEMPLATE_ROOT="/templates/source"' '' 'mkdir -p "$SOURCE_ROOT"' 'cp -a --update=none "$TEMPLATE_ROOT/." "$SOURCE_ROOT/"' '' 'mkdir -p "$SOURCE_ROOT/repos" "$SOURCE_ROOT/local"' '' 'if command -v chown >/dev/null 2>&1; then' '  chown -R ben:ben "$SOURCE_ROOT" 2>/dev/null || true' 'fi' > /home/ben/.local/bin/init-source \
+    && chmod +x /home/ben/.local/bin/init-source \
+    && printf '%s\n' '#!/bin/bash' 'set -euo pipefail' '' '/home/ben/.local/bin/init-source' 'exec "$@"' > /home/ben/.local/bin/container-entrypoint \
+    && chmod +x /home/ben/.local/bin/container-entrypoint
 
+ENTRYPOINT ["/home/ben/.local/bin/container-entrypoint"]
 CMD ["/bin/zsh"]

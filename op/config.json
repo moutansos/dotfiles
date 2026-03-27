@@ -1,0 +1,29 @@
+{
+    "repoDirectory": "~/source/repos",
+    "wslRepoDirectory": "/mnt/c/source/repos",
+    "isServer": false,
+    "preferedShell": "zsh",
+    "customEntries": [
+        {
+            "name": "<< nvim-config >>",
+            "paths": {
+                "win": "$env:LOCALAPPDATA/nvim",
+                "linux": "~/.config/nvim"
+            }
+        },
+        {
+            "name": "<< opencode-config >>",
+            "paths": {
+                "win": "$env:USERPROFILE/.config/opencode",
+                "linux": "~/.config/opencode"
+            }
+        }
+    ],
+    "customCommands": [
+        {
+            "name": "opencode-attach",
+            "command": "oca",
+            "runInPreferredShell": true
+        }
+    ]
+}

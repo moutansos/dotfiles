@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_ROOT="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_NAME="dotfiles-dev-test"
+project_name="dotfiles-dev-test"
 
 namespace="default"
 image_repository="ghcr.io/moutansos/dotfiles-dev"
@@ -13,6 +13,7 @@ wait_timeout="900s"
 function print_usage {
   echo "Usage: $0 [options]"
   echo "Options:"
+  echo "  --project-name <name>   Base name for the StatefulSet and PVC (default: dotfiles-dev-test)"
   echo "  --namespace <name>      Kubernetes namespace to use (default: default)"
   echo "  --image-tag <tag>       Container image tag to run (default: latest)"
   echo "  --storage-size <size>   PVC size to request (default: 20Gi)"
@@ -23,6 +24,7 @@ function print_usage {
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
+    --project-name) project_name="$2"; shift ;;
     --namespace) namespace="$2"; shift ;;
     --image-tag) image_tag="$2"; shift ;;
     --storage-size) pvc_size="$2"; shift ;;
@@ -58,7 +60,7 @@ function apply_resources {
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: ${PROJECT_NAME}-pvc
+  name: ${project_name}-pvc
   namespace: ${namespace}
 spec:
   accessModes:
@@ -78,56 +80,76 @@ EOF
 function wait_for_pvc {
   print_stage "Waiting For Persistent Volume Claim"
 
-  kubectl wait --namespace "$namespace" --for=jsonpath='{.status.phase}'=Bound pvc/"${PROJECT_NAME}-pvc" --timeout="$wait_timeout"
+  kubectl wait --namespace "$namespace" --for=jsonpath='{.status.phase}'=Bound pvc/"${project_name}-pvc" --timeout="$wait_timeout"
 
   if [[ "$?" -ne 0 ]]; then
     printf "\nPersistentVolumeClaim did not become bound\n"
-    kubectl describe pvc "${PROJECT_NAME}-pvc" -n "$namespace"
+    kubectl describe pvc "${project_name}-pvc" -n "$namespace"
     exit 1
   fi
 }
 
-function apply_pod {
-  print_stage "Applying Pod"
+function apply_statefulset {
+  print_stage "Applying StatefulSet"
 
   kubectl apply -f - <<EOF
 apiVersion: v1
-kind: Pod
+kind: Service
 metadata:
-  name: ${PROJECT_NAME}
+  name: ${project_name}
   namespace: ${namespace}
 spec:
-  restartPolicy: Never
-  containers:
-    - name: workspace
-      image: ${image_repository}:${image_tag}
-      imagePullPolicy: Always
-      args: ["/bin/zsh", "-lc", "sleep infinity"]
-      workingDir: /home/ben/source
-      volumeMounts:
-        - name: source
-          mountPath: /home/ben/source
-  volumes:
-    - name: source
-      persistentVolumeClaim:
-        claimName: ${PROJECT_NAME}-pvc
+  clusterIP: None
+  selector:
+    app: ${project_name}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ${project_name}
+  namespace: ${namespace}
+spec:
+  replicas: 1
+  serviceName: ${project_name}
+  selector:
+    matchLabels:
+      app: ${project_name}
+  template:
+    metadata:
+      labels:
+        app: ${project_name}
+    spec:
+      containers:
+        - name: ${project_name}
+          image: ${image_repository}:${image_tag}
+          imagePullPolicy: Always
+          args: ["/bin/zsh", "-lc", "sleep infinity"]
+          workingDir: /home/ben
+          volumeMounts:
+            - name: home
+              mountPath: /home/ben
+      volumes:
+        - name: home
+          persistentVolumeClaim:
+            claimName: ${project_name}-pvc
 EOF
 
   if [[ "$?" -ne 0 ]]; then
-    printf "\nFailed to apply pod\n"
+    printf "\nFailed to apply StatefulSet\n"
     exit 1
   fi
 }
 
-function wait_for_pod {
-  print_stage "Waiting For Pod"
+function wait_for_statefulset {
+  print_stage "Waiting For StatefulSet"
 
-  kubectl wait --namespace "$namespace" --for=condition=Ready pod/"$PROJECT_NAME" --timeout="$wait_timeout"
+  kubectl rollout status --namespace "$namespace" statefulset/"$project_name" --timeout="$wait_timeout"
 
   if [[ "$?" -ne 0 ]]; then
-    printf "\nPod did not become ready\n"
-    kubectl get pod "$PROJECT_NAME" -n "$namespace" -o wide
-    kubectl describe pod "$PROJECT_NAME" -n "$namespace"
+    printf "\nStatefulSet did not become ready\n"
+    kubectl get statefulset "$project_name" -n "$namespace"
+    kubectl get pod "${project_name}-0" -n "$namespace" -o wide
+    kubectl describe pod "${project_name}-0" -n "$namespace"
     exit 1
   fi
 }
@@ -136,15 +158,15 @@ function attach_shell {
   print_stage "Attaching To Container"
 
   if [[ -t 0 && -t 1 ]]; then
-    kubectl exec -n "$namespace" -it "$PROJECT_NAME" -- /bin/zsh
+    kubectl exec -n "$namespace" -it "${project_name}-0" -- /bin/zsh
   else
-    kubectl exec -n "$namespace" "$PROJECT_NAME" -- /bin/zsh -lc 'pwd && ls -la /home/ben/source'
+    kubectl exec -n "$namespace" "${project_name}-0" -- /bin/zsh -lc 'pwd && ls -la /home/ben && ls -la /home/ben/source'
   fi
 }
 
 ensure_dependencies
 apply_resources
 wait_for_pvc
-apply_pod
-wait_for_pod
+apply_statefulset
+wait_for_statefulset
 attach_shell

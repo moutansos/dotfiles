@@ -90,14 +90,18 @@ RUN curl -fsSL https://bun.sh/install | bash \
     && curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path \
     && git clone --depth=1 https://code.msyke.dev/mSyke/nvim-config /home/ben/.config/nvim \
     && git clone --depth=1 https://github.com/moutansos/op /templates/source/repos/op \
+    && git config --global init.defaultBranch main \
     && cp /home/ben/op-config.json /templates/source/repos/op/config.json \
     && make -C /templates/source/repos/op/native \
+    && printf '.nfs*\n' > /home/ben/.gitignore_global \
+    && git config --global core.excludesfile /home/ben/.gitignore_global \
     && printf '#!/bin/bash\npwsh ~/source/repos/op/Open-Project.ps1 "$@"\n' > /home/ben/.local/bin/op \
     && chmod +x /home/ben/.local/bin/op \
-    && printf '%s\n' '#!/bin/bash' 'set -euo pipefail' '' 'SOURCE_ROOT="/home/ben/source"' 'TEMPLATE_ROOT="/templates/source"' '' 'mkdir -p "$SOURCE_ROOT"' 'cp -a --update=none "$TEMPLATE_ROOT/." "$SOURCE_ROOT/"' '' 'mkdir -p "$SOURCE_ROOT/repos" "$SOURCE_ROOT/local"' '' 'if command -v chown >/dev/null 2>&1; then' '  chown -R ben:ben "$SOURCE_ROOT" 2>/dev/null || true' 'fi' > /home/ben/.local/bin/init-source \
-    && chmod +x /home/ben/.local/bin/init-source \
-    && printf '%s\n' '#!/bin/bash' 'set -euo pipefail' '' '/home/ben/.local/bin/init-source' 'exec "$@"' > /home/ben/.local/bin/container-entrypoint \
-    && chmod +x /home/ben/.local/bin/container-entrypoint
+    && printf '%s\n' '#!/bin/bash' 'set -euo pipefail' '' 'SOURCE_ROOT="/home/ben/source"' 'TEMPLATE_ROOT="/templates/source"' '' 'mkdir -p "$SOURCE_ROOT"' 'cp -a --update=none "$TEMPLATE_ROOT/." "$SOURCE_ROOT/"' '' 'mkdir -p "$SOURCE_ROOT/repos" "$SOURCE_ROOT/local"' '' 'if command -v chown >/dev/null 2>&1; then' '  chown -R ben:ben "$SOURCE_ROOT" 2>/dev/null || true' 'fi' > /usr/local/bin/init-source \
+    && chmod +x /usr/local/bin/init-source \
+    && tar -C /home/ben -czf /opt/home-template.tar.gz . \
+    && printf '%s\n' '#!/bin/bash' 'set -euo pipefail' '' 'HOME_ROOT="/home/ben"' 'HOME_TEMPLATE="/opt/home-template.tar.gz"' 'HOME_MARKER="$HOME_ROOT/.container-home-initialized"' '' 'mkdir -p "$HOME_ROOT"' '' 'if [[ ! -f "$HOME_MARKER" ]]; then' '  tar --skip-old-files -xzf "$HOME_TEMPLATE" -C "$HOME_ROOT"' '  touch "$HOME_MARKER"' 'fi' '' '/usr/local/bin/init-source' '' 'exec "$@"' > /usr/local/bin/container-entrypoint \
+    && chmod +x /usr/local/bin/container-entrypoint
 
-ENTRYPOINT ["/home/ben/.local/bin/container-entrypoint"]
+ENTRYPOINT ["/usr/local/bin/container-entrypoint"]
 CMD ["/bin/zsh"]

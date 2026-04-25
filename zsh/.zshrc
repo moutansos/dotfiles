@@ -63,6 +63,6 @@ fi
 
 # opencode things
 if command -v opencode &> /dev/null; then
-    alias oca="opencode attach http://localhost:4097"
+    alias oca="opencode attach http://localhost:4097 --dir ."
     alias ocs="opencode serve --hostname=0.0.0.0 --port=4097 --cors=https://oc.msyke.dev"
 fi

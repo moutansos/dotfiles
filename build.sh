@@ -4,7 +4,7 @@ SCRIPT_ROOT="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_NAME="dotfiles-dev"
 DOCKERFILE_PATH="$SCRIPT_ROOT/Dockerfile"
 CONTAINER_SOURCE_ROOT="/home/ben/source"
-CONTAINER_WORKDIR="$CONTAINER_SOURCE_ROOT"
+CONTAINER_WORKDIR="/home/ben"
 
 docker_build_flag="false"
 docker_run_flag="false"

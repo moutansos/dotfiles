@@ -82,7 +82,7 @@ RUN mkdir -p /templates/source/repos /templates/source/local \
     && chown -R ben:ben /templates
 
 USER ben
-WORKDIR /home/ben/source
+WORKDIR /home/ben
 
 RUN curl -fsSL https://bun.sh/install | bash \
     && curl -fsSL https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -y latest \

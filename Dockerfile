@@ -103,7 +103,7 @@ USER root
 RUN printf '%s\n' '#!/bin/bash' 'set -euo pipefail' '' 'SOURCE_ROOT="/home/ben/source"' 'TEMPLATE_ROOT="/templates/source"' '' 'mkdir -p "$SOURCE_ROOT"' 'cp -a --update=none "$TEMPLATE_ROOT/." "$SOURCE_ROOT/"' '' 'mkdir -p "$SOURCE_ROOT/repos" "$SOURCE_ROOT/local"' '' 'if command -v chown >/dev/null 2>&1; then' '  chown -R ben:ben "$SOURCE_ROOT" 2>/dev/null || true' 'fi' > /usr/local/bin/init-source \
     && chmod +x /usr/local/bin/init-source \
     && tar -C /home/ben -czf /opt/home-template.tar.gz . \
-    && printf '%s\n' '#!/bin/bash' 'set -euo pipefail' '' 'HOME_ROOT="/home/ben"' 'HOME_TEMPLATE="/opt/home-template.tar.gz"' 'HOME_MARKER="$HOME_ROOT/.container-home-initialized"' '' 'mkdir -p "$HOME_ROOT"' '' 'if [[ ! -f "$HOME_MARKER" ]]; then' '  tar --skip-old-files -xzf "$HOME_TEMPLATE" -C "$HOME_ROOT"' '  touch "$HOME_MARKER"' 'fi' '' '/usr/local/bin/init-source' '' 'exec "$@"' > /usr/local/bin/container-entrypoint \
+    && printf '%s\n' '#!/bin/bash' 'set -euo pipefail' '' 'HOME_ROOT="/home/ben"' 'HOME_TEMPLATE="/opt/home-template.tar.gz"' 'HOME_MARKER="$HOME_ROOT/.container-home-initialized"' '' 'mkdir -p "$HOME_ROOT"' 'tar --skip-old-files -xzf "$HOME_TEMPLATE" -C "$HOME_ROOT"' 'touch "$HOME_MARKER"' '' '/usr/local/bin/init-source' '' 'exec "$@"' > /usr/local/bin/container-entrypoint \
     && chmod +x /usr/local/bin/container-entrypoint
 
 USER ben

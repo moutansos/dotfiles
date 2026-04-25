@@ -1,0 +1,14 @@
+#!/bin/bash
+set -euo pipefail
+
+SOURCE_ROOT="/home/ben/source"
+TEMPLATE_ROOT="/templates/source"
+
+mkdir -p "$SOURCE_ROOT"
+cp -a --update=none "$TEMPLATE_ROOT/." "$SOURCE_ROOT/"
+
+mkdir -p "$SOURCE_ROOT/repos" "$SOURCE_ROOT/local"
+
+if command -v chown >/dev/null 2>&1; then
+  chown -R ben:ben "$SOURCE_ROOT" 2>/dev/null || true
+fi

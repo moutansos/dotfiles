@@ -7,8 +7,7 @@ HOME_MARKER="$HOME_ROOT/.container-home-initialized"
 
 mkdir -p "$HOME_ROOT"
 tar --skip-old-files -xzf "$HOME_TEMPLATE" -C "$HOME_ROOT"
-touch "$HOME_MARKER"
 
-/usr/local/bin/init-source
+touch "$HOME_MARKER"
 
 exec "$@"

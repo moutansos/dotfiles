@@ -78,9 +78,6 @@ COPY --chown=ben:ben zsh/benbrougher-tech.omp.json /home/ben/benbrougher-tech.om
 COPY --chown=ben:ben tmux/.tmux.conf /home/ben/.tmux.conf
 COPY --chown=ben:ben op/config.json /home/ben/op-config.json
 
-RUN mkdir -p /templates/source/repos /templates/source/local \
-    && chown -R ben:ben /templates
-
 USER ben
 WORKDIR /home/ben
 
@@ -89,10 +86,10 @@ RUN curl -fsSL https://bun.sh/install | bash \
     && npm install -g npm@latest \
     && curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path \
     && git clone --depth=1 https://code.msyke.dev/mSyke/nvim-config /home/ben/.config/nvim \
-    && git clone --depth=1 https://github.com/moutansos/op /templates/source/repos/op \
+    && git clone --depth=1 https://github.com/moutansos/op /home/ben/source/repos/op \
     && git config --global init.defaultBranch main \
-    && cp /home/ben/op-config.json /templates/source/repos/op/config.json \
-    && make -C /templates/source/repos/op/native \
+    && cp /home/ben/op-config.json /home/ben/source/repos/op/config.json \
+    && make -C /home/ben/source/repos/op/native \
     && printf '.nfs*\n' > /home/ben/.gitignore_global \
     && git config --global core.excludesfile /home/ben/.gitignore_global \
     && printf '#!/bin/bash\npwsh ~/source/repos/op/Open-Project.ps1 "$@"\n' > /home/ben/.local/bin/op \
@@ -100,10 +97,9 @@ RUN curl -fsSL https://bun.sh/install | bash \
 
 USER root
 
-COPY container-files/init-source /usr/local/bin/init-source
 COPY container-files/container-entrypoint /usr/local/bin/container-entrypoint
 
-RUN chmod +x /usr/local/bin/init-source /usr/local/bin/container-entrypoint \
+RUN chmod +x /usr/local/bin/container-entrypoint \
     && tar -C /home/ben -czf /opt/home-template.tar.gz .
 
 USER ben

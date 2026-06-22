@@ -6,8 +6,10 @@ HOME_TEMPLATE="/opt/home-template.tar.gz"
 HOME_MARKER="$HOME_ROOT/.container-home-initialized"
 
 mkdir -p "$HOME_ROOT"
+printf 'Initializing home from %s into %s\n' "$HOME_TEMPLATE" "$HOME_ROOT"
 tar --skip-old-files -xzf "$HOME_TEMPLATE" -C "$HOME_ROOT"
 
 touch "$HOME_MARKER"
+printf 'Home initialization complete: %s\n' "$HOME_MARKER"
 
 exec "$@"

@@ -4,7 +4,8 @@ SCRIPT_ROOT="$(cd "$(dirname "$0")" && pwd)"
 project_name="dotfiles-dev-test"
 
 namespace="default"
-image_repository="ghcr.io/moutansos/dotfiles-dev"
+image_name="ubuntu"
+image_repository_base="ghcr.io/moutansos/dotfiles-dev"
 image_tag="latest"
 storage_class_name="nfs-csi"
 pvc_size="20Gi"
@@ -15,6 +16,7 @@ function print_usage {
   echo "Options:"
   echo "  --project-name <name>   Base name for the StatefulSet and PVC (default: dotfiles-dev-test)"
   echo "  --namespace <name>      Kubernetes namespace to use (default: default)"
+  echo "  --image <name>          Image variant to run: ubuntu or arch (default: ubuntu)"
   echo "  --image-tag <tag>       Container image tag to run (default: latest)"
   echo "  --storage-size <size>   PVC size to request (default: 20Gi)"
   echo "  --wait-timeout <time>   Wait timeout for PVC/pod readiness (default: 900s)"
@@ -26,6 +28,7 @@ while [[ "$#" -gt 0 ]]; do
   case $1 in
     --project-name) project_name="$2"; shift ;;
     --namespace) namespace="$2"; shift ;;
+    --image) image_name="$2"; shift ;;
     --image-tag) image_tag="$2"; shift ;;
     --storage-size) pvc_size="$2"; shift ;;
     --wait-timeout) wait_timeout="$2"; shift ;;
@@ -34,6 +37,14 @@ while [[ "$#" -gt 0 ]]; do
   esac
   shift
 done
+
+if [[ "$image_name" != "ubuntu" && "$image_name" != "arch" ]]; then
+  echo "Unknown image: $image_name"
+  print_usage
+  exit 1
+fi
+
+image_repository="${image_repository_base}-${image_name}"
 
 function print_stage {
   local stage_name="$1"

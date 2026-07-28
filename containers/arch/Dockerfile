@@ -41,8 +41,7 @@ RUN pacman -Sy --noconfirm archlinux-keyring \
         which \
         xz \
         zsh \
-    && yes | pacman -Scc \
-
+    && rm -rf /var/cache/pacman/pkg/* \
     && if ! id -u ben >/dev/null 2>&1; then useradd --create-home --shell /bin/zsh ben; fi \
     && mkdir -p /home/ben \
     && chsh -s /bin/zsh ben \

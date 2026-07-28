@@ -30,7 +30,7 @@ exec --no-startup-id dex --autostart --environment i3
 # screen before suspend. Use loginctl lock-session to lock your screen.
 exec --no-startup-id xss-lock --transfer-sleep-lock -- swaylock -i ~/.config/sway/lockscreen.png
 bindsym $mod+t exec loginctl lock-session
-output eDP-1 scale 1.5
+output eDP-1 scale 1.8
 output eDP-1 mode 2880x1920@120.00Hz pos 0 0 
 output eDP-1 bg ~/.config/sway/lockscreen.png fill
 
@@ -61,8 +61,8 @@ bindsym $mod+XF86PowerOff exec systemctl suspend
 
 #Brightness Controls
 
-bindsym XF86MonBrightnessUp exec sudo brightnessctl s +10
-bindsym XF86MonBrightnessDown exec sudo brightnessctl s 10-
+bindsym XF86MonBrightnessUp exec sudo brightnessctl s +1000
+bindsym XF86MonBrightnessDown exec sudo brightnessctl s 1000-
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod

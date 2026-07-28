@@ -7,12 +7,24 @@ if sys.platform.startswith("win"):
     config.bind(f"{leader}swi", "spawn -o pwsh.exe -c Start-WorkOnAdoItem.ps1 -WorkItemUrl {url}")
     config.bind(f"{leader}oe", "spawn pwsh.exe -c Start-Process \"{url}\"")
 
-default_zoom = "80%"
+default_zoom = "90%"
 leader = "<Space>"
 
 config.set("colors.webpage.darkmode.enabled", True, "*")
 config.set("colors.webpage.darkmode.enabled", False, "*://dev.azure.com/*")
 config.set("colors.webpage.darkmode.enabled", False, "*://ai-chat.msyke.dev/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://www.dndbeyond.com/characters/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://code.msyke.dev/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://nextcloud.benbrougher.tech/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://harmoney.msyke.dev/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://dev-harmoney.msyke.dev/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://local-harmoney.msyke.dev/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://webtui.ironclad.sh/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://discord.com/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://oc.msyke.dev/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://192.168.100.3:8123/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://192.168.100.17:5006/*")
+config.set("colors.webpage.darkmode.enabled", False, "*://webawesome.com/*")
 
 config.set("content.user_stylesheets", ["./stylesheets/toggl-settings.css"])
 

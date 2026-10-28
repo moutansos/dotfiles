@@ -32,9 +32,11 @@ RUN apt-get update \
         fzf \
         git \
         git-lfs \
+        gpg \
         jq \
         less \
         locales \
+        musl-tools \
         openssh-client \
         pkg-config \
         powershell \

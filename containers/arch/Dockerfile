@@ -27,9 +27,11 @@ RUN pacman -Sy --noconfirm archlinux-keyring \
         fzf \
         git \
         git-lfs \
+        gnupg \
         go \
         jq \
         less \
+        musl \
         openssh \
         pkgconf \
         procps-ng \

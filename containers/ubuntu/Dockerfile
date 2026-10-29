@@ -32,7 +32,7 @@ RUN apt-get update \
         fzf \
         git \
         git-lfs \
-        gpg \
+        gnupg \
         jq \
         less \
         locales \

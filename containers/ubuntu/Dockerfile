@@ -29,7 +29,9 @@ RUN apt-get update \
         ca-certificates \
         curl \
         fd-find \
+        file \
         fzf \
+        gh \
         git \
         git-lfs \
         gnupg \
@@ -41,6 +43,9 @@ RUN apt-get update \
         pkg-config \
         powershell \
         procps \
+        python3 \
+        python3-venv \
+        python3-yaml \
         ripgrep \
         stow \
         sudo \
